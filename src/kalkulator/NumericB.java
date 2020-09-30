@@ -34,11 +34,14 @@ public final class NumericB extends NormalB {
     }
 
     private String numberChecker(String actualText, String checkedText) {
-
+        k.numberClicked = true;
         if (k.afterCompare == true) {
             k.calcEx.setText("");
             actualText = "0";
             k.afterCompare = false;
+        }
+        if (k.afterMethod == true) {
+            actualText = "0";
         }
         if (actualText.equals("Error")) {
             actualText = "0";

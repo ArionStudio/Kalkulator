@@ -29,9 +29,9 @@ public class Kalkulator extends JFrame implements ActionListener {
 
     JLabel calcEx;
     JLabel calField;
-    ArrayList<String> History = new ArrayList<>();
-    double result;
-    String lastMehotd;
+    boolean numberClicked = false;
+    ArrayList<Double> buffor = new ArrayList<>();
+    int lastMehotd;
 
     JPanel numberPanel;
     NumericB[] calcNumber = new NumericB[12];
