@@ -19,14 +19,25 @@ public final class MethodB extends NormalB {
     MethodB(int a, Kalkulator k) {
         super(a, k);
         if (a <= 0 && a >= 9) {
+<<<<<<< HEAD
             methodStyle();
+=======
+            style();
+>>>>>>> 0719de4e67007fb77c4cb430f7a5b73a7246ee18
             actions();
         }
     }
 
+<<<<<<< HEAD
     private void methodStyle() {
         setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 1));
         setBackground(new Color(215, 215, 215));
+=======
+    @Override
+    protected void style() {
+        super.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 1));
+        super.setBackground(new Color(215, 215, 215));
+>>>>>>> 0719de4e67007fb77c4cb430f7a5b73a7246ee18
     }
 
     private int nextMethod() {
@@ -66,29 +77,48 @@ public final class MethodB extends NormalB {
         }
     }
 
-    private String complite(String aT) {
-        int index = 0;
-        while (nextMethod() > -1) {
-            int x = nextMethod();
-            k.History.set(x - 1, calcFun(Double.parseDouble(k.History.get(x - 1)),
-                    Double.parseDouble(k.History.get(x + 1)), k.History.get(x)) + "");
-            k.History.remove(x);
-            k.History.remove(x);
-        }
-        k.calcEx.setText(k.calcEx.getText() + aT);
-        String result = k.History.get(0);
-        k.History = new ArrayList<>();
-        return result;
-    }
+    // private String complite(String aT) {
+    // int index = 0;
+    // while (nextMethod() > -1) {
+    // int x = nextMethod();
+    // k.History.set(x - 1, calcFun(Double.parseDouble(k.History.get(x - 1)),
+    // Double.parseDouble(k.History.get(x + 1)), k.History.get(x)) + "");
+    // k.History.remove(x);
+    // k.History.remove(x);
+    // }
+    // k.calcEx.setText(k.calcEx.getText() + aT);
+    // String result = k.History.get(0);
+    // k.History = new ArrayList<>();
+    // return result;
+    // }
 
     private double round(double x) {
         return Math.round(x * Math.pow(10, 10)) / Math.pow(10, 10);
     }
 
-    private String addMethod(String text) {
+    private double standardMath(String method, double x, double y) {
+        switch (method) {
+            case "+": {
+                return x + y;
+            }
+            case "-": {
+                return x - y;
+            }
+            case "*": {
+                return x * y;
+            }
+            case "/": {
+                return x / y;
+            }
+            default: {
+                return 0;
+            }
+        }
+    }
+
+    private String methodStandard(String text) {
         if (k.afterCompare) {
             if (text == "=") {
-                k.calcEx.setText("");
                 return k.calField.getText();
             } else {
                 k.calcEx.setText("");
@@ -98,51 +128,57 @@ public final class MethodB extends NormalB {
         String aT = k.calField.getText();
         switch (text) {
             case "1/x": {
-                k.calcEx.setText(k.calcEx.getText() + round(1 / Double.parseDouble(aT)) + "");
+                k.calcEx.setText(k.calcEx.getText() + "1/" + Double.parseDouble(aT) + "");
+                k.History.add(aT);
                 return round(1 / Double.parseDouble(aT)) + "";
             }
             case "sqr(x)": {
-                k.calcEx.setText(k.calcEx.getText() + round(Math.pow(Double.parseDouble(aT), 2)) + "");
+                k.calcEx.setText(k.calcEx.getText() + "sqr(" + Double.parseDouble(aT) + ")");
+                k.History.add(aT);
                 return round(Math.pow(Double.parseDouble(aT), 2)) + "";
             }
             case "sqrt(x)": {
-                k.calcEx.setText(k.calcEx.getText() + round(Math.sqrt(Double.parseDouble(aT))) + "");
-                return round(Math.sqrt(Double.parseDouble(aT))) + "";
+                k.calcEx.setText(k.calcEx.getText() + "sqrt(" + Double.parseDouble(aT) + ")");
+                k.History.add(aT);
+                return k.History.get(k.History.size()) + Double.parseDouble(aT);
             }
             case "➕": {
-                k.History.add(aT);
-                k.History.add("+");
-                k.calcEx.setText(k.calcEx.getText() + aT + "+");
-                return "0";
+                if (k.afterMethod) {
+                    k.calcEx.setText(k.calcEx.getText() + "sqrt(" + Double.parseDouble(aT) + ")");
+                    k.History.add(aT);
+                    return k.History.get(k.History.size() - 1)
+                            + Double.parseDouble(k.History.get(k.History.size() - 2));
+                } else {
+                    k.calcEx.setText(k.calcEx.getText() + "sqrt(" + Double.parseDouble(aT) + ")");
+                    k.History.add(aT);
+                    return k.History.get(k.History.size() - 1)
+                            + Double.parseDouble(k.History.get(k.History.size() - 2));
+                }
             }
             case "➖": {
+                k.calcEx.setText(k.calcEx.getText() + "sqrt(" + Double.parseDouble(aT) + ")");
                 k.History.add(aT);
-                k.History.add("-");
-                k.calcEx.setText(k.calcEx.getText() + aT + "-");
-                return "0";
+                return k.History.get(k.History.size()) + Double.parseDouble(aT);
             }
             case "✖": {
+                k.calcEx.setText(k.calcEx.getText() + "sqrt(" + Double.parseDouble(aT) + ")");
                 k.History.add(aT);
-                k.History.add("*");
-                k.calcEx.setText(k.calcEx.getText() + aT + "*");
-                return "0";
+                return k.History.get(k.History.size()) + Double.parseDouble(aT);
             }
             case "➗": {
+                k.calcEx.setText(k.calcEx.getText() + "sqrt(" + Double.parseDouble(aT) + ")");
                 k.History.add(aT);
-                k.History.add("/");
-                k.calcEx.setText(k.calcEx.getText() + aT + "/");
-                return "0";
+                return k.History.get(k.History.size()) + Double.parseDouble(aT);
             }
             case "%": {
+                k.calcEx.setText(k.calcEx.getText() + "sqrt(" + Double.parseDouble(aT) + ")");
                 k.History.add(aT);
-                k.History.add("%");
-                k.calcEx.setText(k.calcEx.getText() + aT + "%");
-                return "0";
+                return k.History.get(k.History.size()) + Double.parseDouble(aT);
             }
             case "=": {
                 k.afterCompare = true;
                 k.History.add(aT);
-                return complite(aT);
+                //return sta(aT);
             }
             default: {
                 return "0";
@@ -151,7 +187,7 @@ public final class MethodB extends NormalB {
     }
 
     private void calcInputEnd(String text) {
-        String ent = addMethod(text);
+        String ent = methodStandard(text);
         k.calField.setText(ent);
     }
 

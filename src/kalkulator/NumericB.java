@@ -13,82 +13,86 @@ import java.awt.event.MouseEvent;
  *
  * @author Adrian
  */
-public final class NumericB extends NormalB{
+public final class NumericB extends NormalB {
 
     public NumericB(int a, Kalkulator k) {
         super(a, k);
-        if(a >= 11 && a <=0) {
-            numericStyle();
+        if (a >= 11 && a <= 0) {
+            style();
             actions();
         }
     }
-    private void numericStyle(){
-        setBackground(new Color(230, 230, 230));
+
+    @Override
+    protected void style() {
+        super.style();
+        super.setBackground(new Color(230, 230, 230));
     }
-    
-    private String lastChar(String text){
+
+    private String lastChar(String text) {
         return text.charAt(text.length() - 1) + "";
     }
-    private String numberChecker(String actualText, String checkedText){
-        
-        if(k.afterCompare == true){
+
+    private String numberChecker(String actualText, String checkedText) {
+
+        if (k.afterCompare == true) {
             k.calcEx.setText("");
             actualText = "0";
             k.afterCompare = false;
         }
-        if(actualText.equals("Error")){
+        if (actualText.equals("Error")) {
             actualText = "0";
         }
-        if(actualText.length() == 16){
+        if (actualText.length() == 16) {
             return actualText;
         }
         String lAText = lastChar(actualText);
-        if(checkedText.equals(",")){
-            if(actualText.contains(",")){
+        if (checkedText.equals(",")) {
+            if (actualText.contains(",")) {
                 return actualText;
             }
-            if(lAText.equals(",")){
+            if (lAText.equals(",")) {
                 return actualText;
-            }else{
+            } else {
                 return actualText.concat(",");
             }
         }
-        
-        if(checkedText.equals("+/-")){
-            if(actualText.charAt(0) != '-'){
+
+        if (checkedText.equals("+/-")) {
+            if (actualText.charAt(0) != '-') {
                 return "-".concat(actualText);
-            }else{
+            } else {
                 return actualText.substring(1);
             }
         }
-        if(actualText.equals("0")){
-            if(checkedText.equals("0")){
+        if (actualText.equals("0")) {
+            if (checkedText.equals("0")) {
                 return "0";
-            }else{
+            } else {
                 return checkedText;
             }
-        }else{
+        } else {
             return actualText.concat(checkedText);
         }
     }
-    private void calcInput(String text){
-        
+
+    private void calcInput(String text) {
+
         String actText = k.calField.getText();
         String ent = numberChecker(actText, text);
         k.calField.setText(ent);
     }
 
-
     @Override
-    protected void actions(){
+    protected void actions() {
         super.actions();
-        super.addMouseListener(new MouseAdapter(){
+        super.addMouseListener(new MouseAdapter() {
             @Override
-            public void mousePressed(MouseEvent me){
+            public void mousePressed(MouseEvent me) {
                 calcInput(text);
                 k.repaint();
             }
         });
-        
+
     }
 }
