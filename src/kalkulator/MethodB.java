@@ -27,11 +27,6 @@ public final class MethodB extends NormalB {
         }
     }
 
-    private void methodStyle() {
-        setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 1));
-        setBackground(new Color(215, 215, 215));
-    }
-
     @Override
     protected void style() {
         super.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 1));
@@ -114,7 +109,7 @@ public final class MethodB extends NormalB {
 
     private String standardMath(int methodIdx, String aT) {
         String method[] = new String[] { "+", "-", "*", "/", "%", "=" };
-        if ((k.doMethod && !k.doNumber)) {
+        if (k.doMethod && !k.doNumber && k.lastMethod > 5) {
             k.doMethod = true;
             k.doNumber = false;
             if (methodIdx == 5) {
@@ -122,8 +117,10 @@ public final class MethodB extends NormalB {
                 k.calcEx.setText(k.result + "");
                 return k.result + "";
             }
-            if (method[methodIdx] != lastChar(k.calcEx.getText()))
-                k.calcEx.setText(changeLastChar(k.calcEx.getText(), method[methodIdx]));
+            if (k.calcEx.getText().length() > 0)
+                if ((method[methodIdx] != lastChar(k.calcEx.getText())))
+                    k.calcEx.setText(changeLastChar(k.calcEx.getText(), method[methodIdx]));
+
             return k.result + "";
         }
         k.doMethod = true;
@@ -132,24 +129,29 @@ public final class MethodB extends NormalB {
         if (k.howMany == 0) {
             k.result = Double.parseDouble(aT);
             k.calcEx.setText(k.result + method[methodIdx]);
+            if (methodIdx != 5) {
+                k.lastMethodNO = methodIdx;
+            }
             k.howMany++;
         } else {
             if (methodIdx == 5) {
                 k.calcEx.setText("");
                 k.howMany = 0;
             } else {
-                k.lastMethodNO = methodIdx;
                 k.calcEx.setText(k.calcEx.getText() + aT + method[methodIdx]);
                 k.howMany++;
             }
             k.result = calculate(method[k.lastMethodNO], k.result, Double.parseDouble(aT));
+        }
+        if (methodIdx != 5) {
+            k.lastMethodNO = methodIdx;
         }
         k.lastMethod = methodIdx;
         return k.result + "";
     }
 
     private String methodStandard(String text) {
-        if(k.lastMethod == 5){
+        if (k.lastMethod == 5) {
             if (k.lastMethod == 6) {
                 text = "1/x";
             } else if (k.lastMethod == 7) {
@@ -161,12 +163,13 @@ public final class MethodB extends NormalB {
         String aT = k.calField.getText();
         switch (text) {
             case "1/x": {
-                System.out.println("XD");
                 if (k.lastMethod == 6 || k.lastMethod == 5) {
                     k.calcEx.setText("1/" + Double.parseDouble(aT) + "");
                 } else {
                     k.calcEx.setText(k.calcEx.getText() + "1/" + Double.parseDouble(aT) + "");
                 }
+                k.lastMethod = 6;
+                k.doNumber = true;
                 return round(1 / Double.parseDouble(aT)) + "";
             }
             case "sqr(x)": {
@@ -176,6 +179,7 @@ public final class MethodB extends NormalB {
                     k.calcEx.setText(k.calcEx.getText() + "sqr(" + Double.parseDouble(aT) + ")");
                 }
                 k.lastMethod = 7;
+                k.doNumber = true;
                 return round(Math.pow(Double.parseDouble(aT), 2)) + "";
             }
             case "sqrt(x)": {
@@ -185,6 +189,7 @@ public final class MethodB extends NormalB {
                     k.calcEx.setText(k.calcEx.getText() + "sqrt(" + Double.parseDouble(aT) + ")");
                 }
                 k.lastMethod = 8;
+                k.doNumber = true;
                 return round(Math.sqrt(Double.parseDouble(aT))) + "";
             }
             case "➕": {

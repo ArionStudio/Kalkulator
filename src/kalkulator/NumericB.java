@@ -34,7 +34,10 @@ public final class NumericB extends NormalB {
     }
 
     private String numberChecker(String actualText, String checkedText) {
-        if(k.doMethod) actualText = "0";
+        if(k.doMethod){
+            actualText = "0";
+            k.doMethod = false;
+        }
         k.doNumber= true;
         if (actualText.length() == 16) {
             return actualText;
