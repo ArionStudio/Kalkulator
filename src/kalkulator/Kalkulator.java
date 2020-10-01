@@ -29,16 +29,19 @@ public class Kalkulator extends JFrame implements ActionListener {
 
     JLabel calcEx;
     JLabel calField;
-    boolean numberClicked = false;
-    ArrayList<Double> buffor = new ArrayList<>();
-    int lastMehotd;
+    double result = 0;
+    int howMany = 0;
+    int lastMethod = -1;
+    int lastMethodNO = 0;
+    boolean doMethod = false;
+    boolean doNumber = false;
 
     JPanel numberPanel;
     NumericB[] calcNumber = new NumericB[12];
     MethodB[] calcMethod = new MethodB[10];
     ActionB[] calcAction = new ActionB[3];
 
-    Boolean afterCompare = false, afterMethod = false;
+    Boolean afterCompare = false;
 
     public Kalkulator() {
         initFrame();

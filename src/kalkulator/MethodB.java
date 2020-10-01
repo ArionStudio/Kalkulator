@@ -8,6 +8,8 @@ package kalkulator;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.function.Function;
+
 import javax.swing.*;
 
 /**
@@ -73,131 +75,94 @@ public final class MethodB extends NormalB {
         }
     }
 
-    // private String complite(String aT) {
-    // int index = 0;
-    // while (nextMethod() > -1) {
-    // int x = nextMethod();
-    // k.History.set(x - 1, calcFun(Double.parseDouble(k.History.get(x - 1)),
-    // Double.parseDouble(k.History.get(x + 1)), k.History.get(x)) + "");
-    // k.History.remove(x);
-    // k.History.remove(x);
-    // }
-    // k.calcEx.setText(k.calcEx.getText() + aT);
-    // String result = k.History.get(0);
-    // k.History = new ArrayList<>();
-    // return result;
-    // }
-
     private double round(double x) {
         return Math.round(x * Math.pow(10, 10)) / Math.pow(10, 10);
     }
 
-    private String sM(String m, double x, double y) {
+    private double calculate(String m, double x, double y) {
         switch (m) {
             case "+": {
-                return (x + y) + "";
+                return (x + y);
             }
             case "-": {
-                return (x - y) + "";
+                return (x - y);
             }
             case "*": {
-                return (x * y) + "";
+                return (x * y);
             }
             case "/": {
-                return (x / y) + "";
+                return (x / y);
             }
             case "%": {
-                return (x % y) + "";
+                return (x % y);
             }
             default: {
-                return "0";
+                return 0;
             }
         }
     }
 
-    private String standardMath(int metIdx, String aT) {
+    private String lastChar(String x) {
+        return x.charAt(x.length() - 1) + "";
+    }
+
+    private String changeLastChar(String text, String modifier) {
+        String x = k.calcEx.getText();
+        x = x.substring(0, x.length() - 1) + modifier;
+        return x;
+    }
+
+    private String standardMath(int methodIdx, String aT) {
         String method[] = new String[] { "+", "-", "*", "/", "%", "=" };
-        if (k.numberClicked && k.buffor.size() == 0) {
-            k.numberClicked = false;
-
-            k.calcEx.setText(k.calcEx.getText() + aT + method[metIdx]);
-            if (k.buffor.size() == 0) {
-                k.buffor.add(1.0);
+        if ((k.doMethod && !k.doNumber)) {
+            k.doMethod = true;
+            k.doNumber = false;
+            if (methodIdx == 5) {
+                k.result = calculate(method[k.lastMethodNO], k.result, Double.parseDouble(aT));
+                k.calcEx.setText(k.result + "");
+                return k.result + "";
             }
-            k.buffor.add(Double.parseDouble(aT));
-            k.afterMethod = true;
-            if (metIdx == 5) {
-                k.afterCompare = true;
-            } else {
-                k.lastMehotd = metIdx;
-            }
-            return aT;
-        } else {
-            if (k.numberClicked) {
-                k.buffor.add(Double.parseDouble(aT));
-                System.out.println(aT);
-                k.numberClicked = false;
-            }
-            if ((k.lastMehotd == metIdx && k.buffor.size() > 2) || metIdx == 5) {
-                if (k.buffor.get(0) == 1) {
-                    k.buffor.set(0, 1.0);
-                    k.afterMethod = false;
-                    k.calcEx.setText(k.calcEx.getText() + Double.parseDouble(aT));
-                    double x, y;
-                    if (k.buffor.size() == 2) {
-                        x = k.buffor.get(1);
-                        y = k.buffor.get(1);
-                    } else {
-                        x = k.buffor.get(1);
-                        y = k.buffor.get(2);
-                    }
-                    k.buffor = new ArrayList<Double>();
-                    if (metIdx == 5) {
-                        k.afterCompare = true;
-                        return sM(method[k.lastMehotd], x, y);
-                    } else {
-                        return sM(method[metIdx], x, y);
-                    }
-
-                } else {
-                    if (k.afterCompare) {
-                        k.calcEx.setText(aT + "=");
-                    }
-                    return aT;
-                }
-
-            } else {
-                System.out.println(k.afterCompare);
-                if (k.afterCompare) {
-                    k.lastMehotd = metIdx;
-                    k.afterMethod = true;
-                    k.afterCompare = false;
-                    k.buffor = new ArrayList<Double>();
-                    k.buffor.add(1.0);
-                    k.buffor.add(Double.parseDouble(aT));
-                    k.calcEx.setText(aT + method[metIdx]);
-                    return aT;
-                }
-                k.lastMehotd = metIdx;
-                String l = k.calcEx.getText();
-                l = l.substring(0, l.length() - 1) + method[metIdx];
-                k.calcEx.setText(l);
-                return aT;
-            }
+            if (method[methodIdx] != lastChar(k.calcEx.getText()))
+                k.calcEx.setText(changeLastChar(k.calcEx.getText(), method[methodIdx]));
+            return k.result + "";
         }
+        k.doMethod = true;
+        k.doNumber = false;
+
+        if (k.howMany == 0) {
+            k.result = Double.parseDouble(aT);
+            k.calcEx.setText(k.result + method[methodIdx]);
+            k.howMany++;
+        } else {
+            if (methodIdx == 5) {
+                k.calcEx.setText("");
+                k.howMany = 0;
+            } else {
+                k.lastMethodNO = methodIdx;
+                k.calcEx.setText(k.calcEx.getText() + aT + method[methodIdx]);
+                k.howMany++;
+            }
+            k.result = calculate(method[k.lastMethodNO], k.result, Double.parseDouble(aT));
+        }
+        k.lastMethod = methodIdx;
+        return k.result + "";
     }
 
     private String methodStandard(String text) {
-        if (k.afterCompare) {
-            if (text == "=") {
-                return k.calField.getText();
+        if(k.lastMethod == 5){
+            if (k.lastMethod == 6) {
+                text = "1/x";
+            } else if (k.lastMethod == 7) {
+                text = "sqr(x)";
+            } else if (k.lastMethod == 8) {
+                text = "sqrt(x)";
             }
         }
         String aT = k.calField.getText();
         switch (text) {
             case "1/x": {
-                if(k.afterMethod) return aT;
-                if (k.afterCompare) {
+                System.out.println("XD");
+                if (k.lastMethod == 6 || k.lastMethod == 5) {
                     k.calcEx.setText("1/" + Double.parseDouble(aT) + "");
                 } else {
                     k.calcEx.setText(k.calcEx.getText() + "1/" + Double.parseDouble(aT) + "");
@@ -205,22 +170,21 @@ public final class MethodB extends NormalB {
                 return round(1 / Double.parseDouble(aT)) + "";
             }
             case "sqr(x)": {
-                if (k.afterCompare) {
+                if (k.lastMethod == 7 || k.lastMethod == 5) {
                     k.calcEx.setText("sqr(" + Double.parseDouble(aT) + ")");
                 } else {
                     k.calcEx.setText(k.calcEx.getText() + "sqr(" + Double.parseDouble(aT) + ")");
                 }
-
+                k.lastMethod = 7;
                 return round(Math.pow(Double.parseDouble(aT), 2)) + "";
             }
             case "sqrt(x)": {
-                if(k.afterMethod) return aT;
-                if (k.afterCompare) {
+                if (k.lastMethod == 8 || k.lastMethod == 5) {
                     k.calcEx.setText("sqrt(" + Double.parseDouble(aT) + ")");
                 } else {
                     k.calcEx.setText(k.calcEx.getText() + "sqrt(" + Double.parseDouble(aT) + ")");
                 }
-
+                k.lastMethod = 8;
                 return round(Math.sqrt(Double.parseDouble(aT))) + "";
             }
             case "➕": {
