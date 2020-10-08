@@ -7,10 +7,6 @@ package kalkulator;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.function.Function;
-
-import javax.swing.*;
 
 /**
  *
@@ -29,49 +25,17 @@ public final class MethodB extends NormalB {
 
     @Override
     protected void style() {
-        super.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 1));
+        super.style();
         super.setBackground(new Color(215, 215, 215));
-    }
-
-    // private int nextMethod() {
-    // String arr[] = new String[] { "*", "/", "%", "+", "-" };
-    // for (int i = 0; i < 6; i++) {
-    // for (int j = 1; j < k.History.size(); j += 2) {
-    // if (arr[i].equals(k.History.get(j))) {
-    // return j;
-    // }
-    // }
-    // }
-    // return -1;
-    // }
-
-    private String calcFun(double a, double b, String c) {
-        switch (c) {
-            case "+": {
-                return round(a + b) + "";
-            }
-            case "-": {
-                return round(a - b) + "";
-            }
-            case "*": {
-                return round(a * b) + "";
-            }
-            case "/": {
-                if (b == 0)
-                    return "Nie wolno przez 0!";
-                return round(a / b) + "";
-            }
-            case "%": {
-                return round(a % b) + "";
-            }
-            default: {
-                return "0";
-            }
-        }
+        super.setFont(new Font(Font.DIALOG, Font.PLAIN, 20));
     }
 
     private double round(double x) {
         return Math.round(x * Math.pow(10, 10)) / Math.pow(10, 10);
+    }
+
+    private String changeLastChar(String text, String modifayer) {
+        return text.charAt(text.length() - 1) + "";
     }
 
     private double calculate(String m, double x, double y) {
@@ -101,15 +65,20 @@ public final class MethodB extends NormalB {
         return x.charAt(x.length() - 1) + "";
     }
 
-    private String changeLastChar(String text, String modifier) {
-        String x = k.calcEx.getText();
-        x = x.substring(0, x.length() - 1) + modifier;
-        return x;
-    }
-
     private String standardMath(int methodIdx, String aT) {
         String method[] = new String[] { "+", "-", "*", "/", "%", "=" };
-        if (k.doMethod && !k.doNumber && k.lastMethod > 5) {
+        if (k.lastMethodNO == 5) {
+            k.result = 0;
+            k.howMany = 0;
+        }
+        if (Double.parseDouble(aT) == 0 && k.lastMethod == 3) {
+            k.calcEx.setText("Nie można dzielić przez 0!");
+            k.lastMethod = 0;
+            k.lastMethodNO = 0;
+            k.doMethod = false;
+            return "0";
+        }
+        if (k.doMethod && !k.doNumber && k.lastMethod < 5) {
             k.doMethod = true;
             k.doNumber = false;
             if (methodIdx == 5) {
@@ -163,7 +132,7 @@ public final class MethodB extends NormalB {
         String aT = k.calField.getText();
         switch (text) {
             case "1/x": {
-                if (k.lastMethod == 6 || k.lastMethod == 5) {
+                if (k.lastMethod > 4) {
                     k.calcEx.setText("1/" + Double.parseDouble(aT) + "");
                 } else {
                     k.calcEx.setText(k.calcEx.getText() + "1/" + Double.parseDouble(aT) + "");
@@ -172,8 +141,8 @@ public final class MethodB extends NormalB {
                 k.doNumber = true;
                 return round(1 / Double.parseDouble(aT)) + "";
             }
-            case "sqr(x)": {
-                if (k.lastMethod == 7 || k.lastMethod == 5) {
+            case "x²": {
+                if (k.lastMethod > 4) {
                     k.calcEx.setText("sqr(" + Double.parseDouble(aT) + ")");
                 } else {
                     k.calcEx.setText(k.calcEx.getText() + "sqr(" + Double.parseDouble(aT) + ")");
@@ -182,8 +151,8 @@ public final class MethodB extends NormalB {
                 k.doNumber = true;
                 return round(Math.pow(Double.parseDouble(aT), 2)) + "";
             }
-            case "sqrt(x)": {
-                if (k.lastMethod == 8 || k.lastMethod == 5) {
+            case "√x": {
+                if (k.lastMethod > 4) {
                     k.calcEx.setText("sqrt(" + Double.parseDouble(aT) + ")");
                 } else {
                     k.calcEx.setText(k.calcEx.getText() + "sqrt(" + Double.parseDouble(aT) + ")");
@@ -223,6 +192,7 @@ public final class MethodB extends NormalB {
 
     @Override
     protected void actions() {
+        super.actions();
         super.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent me) {

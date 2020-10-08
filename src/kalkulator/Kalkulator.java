@@ -41,8 +41,6 @@ public class Kalkulator extends JFrame implements ActionListener {
     MethodB[] calcMethod = new MethodB[10];
     ActionB[] calcAction = new ActionB[3];
 
-    Boolean afterCompare = false;
-
     public Kalkulator() {
         initFrame();
     }
@@ -176,8 +174,6 @@ public class Kalkulator extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        Object source = evt.getSource();
-
     }
 
     public static void main(String[] args) {

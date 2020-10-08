@@ -34,11 +34,14 @@ public final class NumericB extends NormalB {
     }
 
     private String numberChecker(String actualText, String checkedText) {
-        if(k.doMethod){
+        if (k.lastMethodNO == 0) {
+            k.calcEx.setText("");
+        }
+        if (k.doMethod) {
             actualText = "0";
             k.doMethod = false;
         }
-        k.doNumber= true;
+        k.doNumber = true;
         if (actualText.length() == 16) {
             return actualText;
         }

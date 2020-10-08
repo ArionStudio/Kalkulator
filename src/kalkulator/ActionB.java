@@ -27,11 +27,38 @@ public final class ActionB extends NormalB {
     protected void style() {
         super.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 1));
         super.setBackground(new Color(215, 215, 215));
+        super.setFont(new Font(Font.DIALOG, Font.PLAIN, 20));
+    }
 
+    private String delLastChar(String text) {
+        String x = k.calcEx.getText();
+        return x.substring(0, x.length() - 1);
     }
 
     private void doActoionAcions(String x) {
-
+        switch (x) {
+            case "C": {
+                k.result = 0;
+                k.howMany = 0;
+                k.lastMethod = -1;
+                k.lastMethodNO = 0;
+                k.doMethod = false;
+                k.doNumber = false;
+                k.calField.setText("0");
+                break;
+            }
+            case "CE": {
+                k.calField.setText("0");
+                break;
+            }
+            case "⌫": {
+                k.calField.setText(delLastChar(text));
+                break;
+            }
+            default: {
+                k.calField.setText("");
+            }
+        }
     }
 
     @Override
