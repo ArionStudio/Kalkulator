@@ -16,7 +16,7 @@ import javax.swing.*;
 public abstract class NormalB extends JButton implements ActionListener {
     protected Kalkulator k;
     String text;
-    private String values[] = new String[] { "7", "8", "9", "4", "5", "6", "1", "2", "3", "+/-", "0", ",", "%", "1/x",
+    private String values[] = new String[] { "7", "8", "9", "4", "5", "6", "1", "2", "3", "+/-", "0", ".", "%", "1/x",
             "x²", "√x", "➗", "✖", "➖", "➕", "=", "C", "CE", "⌫"
 
     };

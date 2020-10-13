@@ -29,10 +29,6 @@ public final class NumericB extends NormalB {
         super.setBackground(new Color(230, 230, 230));
     }
 
-    private String lastChar(String text) {
-        return text.charAt(text.length() - 1) + "";
-    }
-
     private String numberChecker(String actualText, String checkedText) {
         if (k.lastMethodNO == 0) {
             k.calcEx.setText("");
@@ -45,24 +41,16 @@ public final class NumericB extends NormalB {
         if (actualText.length() == 16) {
             return actualText;
         }
-        String lAText = lastChar(actualText);
-        if (checkedText.equals(",")) {
-            if (actualText.contains(",")) {
-                return actualText;
-            }
-            if (lAText.equals(",")) {
+        if (checkedText.equals(".")) {
+            if (actualText.contains(".")) {
                 return actualText;
             } else {
-                return actualText.concat(",");
+                return actualText.concat(".");
             }
         }
 
         if (checkedText.equals("+/-")) {
-            if (actualText.charAt(0) != '-') {
-                return "-".concat(actualText);
-            } else {
-                return actualText.substring(1);
-            }
+            return -1 * Double.parseDouble(actualText) + "";
         }
         if (actualText.equals("0")) {
             if (checkedText.equals("0")) {

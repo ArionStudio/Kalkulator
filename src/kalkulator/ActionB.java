@@ -31,8 +31,15 @@ public final class ActionB extends NormalB {
     }
 
     private String delLastChar(String text) {
-        String x = k.calcEx.getText();
-        return x.substring(0, x.length() - 1);
+        String x = k.calField.getText();
+        if (x.length() > 1) {
+            return x.substring(0, x.length() - 1);
+        } else if (x.length() == 1) {
+            return "0";
+        } else {
+            return x;
+        }
+
     }
 
     private void doActoionAcions(String x) {
@@ -45,6 +52,7 @@ public final class ActionB extends NormalB {
                 k.doMethod = false;
                 k.doNumber = false;
                 k.calField.setText("0");
+                k.calcEx.setText("");
                 break;
             }
             case "CE": {

@@ -29,6 +29,7 @@ public class Kalkulator extends JFrame implements ActionListener {
 
     JLabel calcEx;
     JLabel calField;
+    String oldText;
     double result = 0;
     int howMany = 0;
     int lastMethod = -1;
@@ -99,7 +100,7 @@ public class Kalkulator extends JFrame implements ActionListener {
 
         calField = new JLabel("0", SwingConstants.RIGHT);
 
-        calField.setFont(new Font("Arial", Font.PLAIN, 40));
+        calField.setFont(new Font("Arial", Font.PLAIN, 10));
         calcEx.setPreferredSize(new Dimension(370, 20));
         calField.setPreferredSize(new Dimension(370, 80));
 

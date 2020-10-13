@@ -7,6 +7,9 @@ package kalkulator;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 /**
  *
@@ -52,9 +55,6 @@ public final class MethodB extends NormalB {
             case "/": {
                 return (x / y);
             }
-            case "%": {
-                return (x % y);
-            }
             default: {
                 return 0;
             }
@@ -66,8 +66,8 @@ public final class MethodB extends NormalB {
     }
 
     private String standardMath(int methodIdx, String aT) {
-        String method[] = new String[] { "+", "-", "*", "/", "%", "=" };
-        if (k.lastMethodNO == 5) {
+        String method[] = new String[] { "+", "-", "*", "/", "=" };
+        if (k.lastMethodNO == 4) {
             k.result = 0;
             k.howMany = 0;
         }
@@ -78,19 +78,23 @@ public final class MethodB extends NormalB {
             k.doMethod = false;
             return "0";
         }
-        if (k.doMethod && !k.doNumber && k.lastMethod < 5) {
+        if (k.doMethod && !k.doNumber && k.lastMethod < 4) {
             k.doMethod = true;
             k.doNumber = false;
-            if (methodIdx == 5) {
+            if (methodIdx == 4) {
                 k.result = calculate(method[k.lastMethodNO], k.result, Double.parseDouble(aT));
                 k.calcEx.setText(k.result + "");
-                return k.result + "";
+                return round(k.result) + "";
+            } else if (methodIdx == k.lastMethod) {
+                k.result = calculate(method[k.lastMethodNO], k.result, Double.parseDouble(aT));
+                k.calcEx.setText(k.result + "");
+                return round(k.result) + "";
             }
             if (k.calcEx.getText().length() > 0)
                 if ((method[methodIdx] != lastChar(k.calcEx.getText())))
-                    k.calcEx.setText(changeLastChar(k.calcEx.getText(), method[methodIdx]));
+                    k.calcEx.setText(k.calcEx.getText() + changeLastChar(k.calcEx.getText(), method[methodIdx]));
 
-            return k.result + "";
+            return round(k.result) + "";
         }
         k.doMethod = true;
         k.doNumber = false;
@@ -98,12 +102,12 @@ public final class MethodB extends NormalB {
         if (k.howMany == 0) {
             k.result = Double.parseDouble(aT);
             k.calcEx.setText(k.result + method[methodIdx]);
-            if (methodIdx != 5) {
+            if (methodIdx != 4) {
                 k.lastMethodNO = methodIdx;
             }
             k.howMany++;
         } else {
-            if (methodIdx == 5) {
+            if (methodIdx == 4) {
                 k.calcEx.setText("");
                 k.howMany = 0;
             } else {
@@ -112,52 +116,67 @@ public final class MethodB extends NormalB {
             }
             k.result = calculate(method[k.lastMethodNO], k.result, Double.parseDouble(aT));
         }
-        if (methodIdx != 5) {
+        if (methodIdx != 4) {
             k.lastMethodNO = methodIdx;
         }
         k.lastMethod = methodIdx;
-        return k.result + "";
+        return round(k.result) + "";
     }
 
     private String methodStandard(String text) {
-        if (k.lastMethod == 5) {
-            if (k.lastMethod == 6) {
-                text = "1/x";
-            } else if (k.lastMethod == 7) {
-                text = "sqr(x)";
-            } else if (k.lastMethod == 8) {
-                text = "sqrt(x)";
-            }
-        }
         String aT = k.calField.getText();
         switch (text) {
+            case "%": {
+                if (k.lastMethod > 4) {
+                    k.calcEx.setText(k.oldText + (Double.parseDouble(aT) / 100) + "");
+                } else {
+                    k.oldText = k.calcEx.getText();
+                    k.calcEx.setText(k.calcEx.getText() + (Double.parseDouble(aT) / 100) + "");
+                }
+                k.lastMethod = 5;
+                k.doMethod = true;
+                k.doNumber = true;
+                return round(Double.parseDouble(aT)) / 100 + "";
+            }
             case "1/x": {
                 if (k.lastMethod > 4) {
-                    k.calcEx.setText("1/" + Double.parseDouble(aT) + "");
+                    k.calcEx.setText(k.oldText + "1/" + Double.parseDouble(aT) + "");
                 } else {
+
+                    k.oldText = k.calcEx.getText();
                     k.calcEx.setText(k.calcEx.getText() + "1/" + Double.parseDouble(aT) + "");
                 }
                 k.lastMethod = 6;
+
+                k.doMethod = true;
                 k.doNumber = true;
                 return round(1 / Double.parseDouble(aT)) + "";
             }
             case "x²": {
                 if (k.lastMethod > 4) {
-                    k.calcEx.setText("sqr(" + Double.parseDouble(aT) + ")");
+                    k.calcEx.setText(k.oldText + "sqr(" + Double.parseDouble(aT) + ")");
                 } else {
+
+                    k.oldText = k.calcEx.getText();
                     k.calcEx.setText(k.calcEx.getText() + "sqr(" + Double.parseDouble(aT) + ")");
                 }
                 k.lastMethod = 7;
+
+                k.doMethod = true;
                 k.doNumber = true;
                 return round(Math.pow(Double.parseDouble(aT), 2)) + "";
             }
             case "√x": {
                 if (k.lastMethod > 4) {
-                    k.calcEx.setText("sqrt(" + Double.parseDouble(aT) + ")");
+                    k.calcEx.setText(k.oldText + "sqrt(" + Double.parseDouble(aT) + ")");
                 } else {
+
+                    k.oldText = k.calcEx.getText();
                     k.calcEx.setText(k.calcEx.getText() + "sqrt(" + Double.parseDouble(aT) + ")");
                 }
                 k.lastMethod = 8;
+
+                k.doMethod = true;
                 k.doNumber = true;
                 return round(Math.sqrt(Double.parseDouble(aT))) + "";
             }
@@ -173,11 +192,8 @@ public final class MethodB extends NormalB {
             case "➗": {
                 return standardMath(3, aT);
             }
-            case "%": {
-                return standardMath(4, aT);
-            }
             case "=": {
-                return standardMath(5, aT);
+                return standardMath(4, aT);
             }
             default: {
                 return "0";
