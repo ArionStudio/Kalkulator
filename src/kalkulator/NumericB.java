@@ -30,7 +30,11 @@ public final class NumericB extends NormalB {
     }
 
     private String numberChecker(String actualText, String checkedText) {
-        if (k.lastMethodNO == 0) {
+        if (k.calcEx.getText().equals("Nie można dzielić przez 0!")
+                || k.calcEx.getText().equals("Nieprawidłowe dane wejściowe")) {
+            k.calcEx.setText("");
+        }
+        if (k.lastMethod == 4) {
             k.calcEx.setText("");
         }
         if (k.doMethod) {
@@ -38,7 +42,7 @@ public final class NumericB extends NormalB {
             k.doMethod = false;
         }
         k.doNumber = true;
-        if (actualText.length() == 16) {
+        if (actualText.length() == 25) {
             return actualText;
         }
         if (checkedText.equals(".")) {
@@ -76,7 +80,11 @@ public final class NumericB extends NormalB {
         super.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent me) {
-                calcInput(text);
+                if (k.powerCalc) {
+                    calcInput(text);
+                } else {
+                    return;
+                }
                 k.repaint();
             }
         });

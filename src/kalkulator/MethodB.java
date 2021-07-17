@@ -7,9 +7,6 @@ package kalkulator;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
 /**
  *
@@ -38,7 +35,7 @@ public final class MethodB extends NormalB {
     }
 
     private String changeLastChar(String text, String modifayer) {
-        return text.charAt(text.length() - 1) + "";
+        return text.substring(0, text.length() - 1) + modifayer;
     }
 
     private double calculate(String m, double x, double y) {
@@ -62,6 +59,7 @@ public final class MethodB extends NormalB {
     }
 
     private String lastChar(String x) {
+        System.out.println(x.charAt(x.length() - 1) + "");
         return x.charAt(x.length() - 1) + "";
     }
 
@@ -85,15 +83,17 @@ public final class MethodB extends NormalB {
                 k.result = calculate(method[k.lastMethodNO], k.result, Double.parseDouble(aT));
                 k.calcEx.setText(k.result + "");
                 return round(k.result) + "";
-            } else if (methodIdx == k.lastMethod) {
+            } else if (methodIdx == k.lastMethod && k.result != Double.parseDouble(aT)) {
                 k.result = calculate(method[k.lastMethodNO], k.result, Double.parseDouble(aT));
                 k.calcEx.setText(k.result + "");
                 return round(k.result) + "";
             }
-            if (k.calcEx.getText().length() > 0)
-                if ((method[methodIdx] != lastChar(k.calcEx.getText())))
-                    k.calcEx.setText(k.calcEx.getText() + changeLastChar(k.calcEx.getText(), method[methodIdx]));
 
+            if (k.calcEx.getText().length() > 0)
+                if ((method[methodIdx] != lastChar(k.calcEx.getText()))) {
+                    k.lastMethod = k.lastMethodNO = methodIdx;
+                    k.calcEx.setText(changeLastChar(k.calcEx.getText(), method[methodIdx]));
+                }
             return round(k.result) + "";
         }
         k.doMethod = true;
@@ -101,11 +101,13 @@ public final class MethodB extends NormalB {
 
         if (k.howMany == 0) {
             k.result = Double.parseDouble(aT);
-            k.calcEx.setText(k.result + method[methodIdx]);
+
             if (methodIdx != 4) {
                 k.lastMethodNO = methodIdx;
+                k.calcEx.setText(k.result + method[methodIdx]);
+
+                k.howMany++;
             }
-            k.howMany++;
         } else {
             if (methodIdx == 4) {
                 k.calcEx.setText("");
@@ -116,14 +118,20 @@ public final class MethodB extends NormalB {
             }
             k.result = calculate(method[k.lastMethodNO], k.result, Double.parseDouble(aT));
         }
+
         if (methodIdx != 4) {
             k.lastMethodNO = methodIdx;
         }
+
         k.lastMethod = methodIdx;
         return round(k.result) + "";
     }
 
     private String methodStandard(String text) {
+        if (k.calcEx.getText().equals("Nie można dzielić przez 0!")
+                || k.calcEx.getText().equals("Nieprawidłowe dane wejściowe")) {
+            k.calcEx.setText("");
+        }
         String aT = k.calField.getText();
         switch (text) {
             case "%": {
@@ -133,12 +141,15 @@ public final class MethodB extends NormalB {
                     k.oldText = k.calcEx.getText();
                     k.calcEx.setText(k.calcEx.getText() + (Double.parseDouble(aT) / 100) + "");
                 }
-                k.lastMethod = 5;
                 k.doMethod = true;
                 k.doNumber = true;
                 return round(Double.parseDouble(aT)) / 100 + "";
             }
             case "1/x": {
+                if (Double.parseDouble(aT) == 0) {
+                    k.calcEx.setText("Nie można dzielić przez 0!");
+                    return "0";
+                }
                 if (k.lastMethod > 4) {
                     k.calcEx.setText(k.oldText + "1/" + Double.parseDouble(aT) + "");
                 } else {
@@ -146,7 +157,6 @@ public final class MethodB extends NormalB {
                     k.oldText = k.calcEx.getText();
                     k.calcEx.setText(k.calcEx.getText() + "1/" + Double.parseDouble(aT) + "");
                 }
-                k.lastMethod = 6;
 
                 k.doMethod = true;
                 k.doNumber = true;
@@ -160,13 +170,16 @@ public final class MethodB extends NormalB {
                     k.oldText = k.calcEx.getText();
                     k.calcEx.setText(k.calcEx.getText() + "sqr(" + Double.parseDouble(aT) + ")");
                 }
-                k.lastMethod = 7;
 
                 k.doMethod = true;
                 k.doNumber = true;
                 return round(Math.pow(Double.parseDouble(aT), 2)) + "";
             }
             case "√x": {
+                if (Double.parseDouble(aT) < 0) {
+                    k.calcEx.setText("Nieprawidłowe dane wejściowe");
+                    return "0";
+                }
                 if (k.lastMethod > 4) {
                     k.calcEx.setText(k.oldText + "sqrt(" + Double.parseDouble(aT) + ")");
                 } else {
@@ -174,7 +187,6 @@ public final class MethodB extends NormalB {
                     k.oldText = k.calcEx.getText();
                     k.calcEx.setText(k.calcEx.getText() + "sqrt(" + Double.parseDouble(aT) + ")");
                 }
-                k.lastMethod = 8;
 
                 k.doMethod = true;
                 k.doNumber = true;
@@ -212,7 +224,11 @@ public final class MethodB extends NormalB {
         super.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent me) {
-                calcInputEnd(text);
+                if (k.powerCalc) {
+                    calcInputEnd(text);
+                } else {
+                    return;
+                }
                 k.repaint();
             }
         });

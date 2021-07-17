@@ -75,7 +75,11 @@ public final class ActionB extends NormalB {
         super.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent me) {
-                doActoionAcions(text);
+                if (k.powerCalc) {
+                    doActoionAcions(text);
+                } else {
+                    return;
+                }
                 k.repaint();
             }
         });

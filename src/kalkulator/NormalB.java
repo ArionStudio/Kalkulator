@@ -50,6 +50,7 @@ public abstract class NormalB extends JButton implements ActionListener {
     }
 
     protected void actions() {
+
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent me) {
@@ -64,6 +65,7 @@ public abstract class NormalB extends JButton implements ActionListener {
             }
         });
         addActionListener(this);
+
     }
 
     @Override
